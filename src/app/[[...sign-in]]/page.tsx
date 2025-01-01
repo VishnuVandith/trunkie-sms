@@ -5,7 +5,8 @@ import * as SignIn from "@clerk/elements/sign-in";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const LoginPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -20,6 +21,8 @@ const LoginPage = () => {
     }
   }, [user, router]);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="h-screen flex items-center justify-center bg-lamaSkyLight">
       <SignIn.Root>
@@ -28,8 +31,8 @@ const LoginPage = () => {
           className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-2"
         >
           <h1 className="text-xl font-bold flex items-center gap-2">
-            <Image src="/logo.png" alt="" width={24} height={24} />
-            SchooLama
+            <Image src="/logo.png" alt="" width={50} height={50} />
+            Trunkie
           </h1>
           <h2 className="text-gray-400">Sign in to your account</h2>
           <Clerk.GlobalError className="text-sm text-red-400" />
@@ -48,11 +51,21 @@ const LoginPage = () => {
             <Clerk.Label className="text-xs text-gray-500">
               Password
             </Clerk.Label>
-            <Clerk.Input
-              type="password"
-              required
-              className="p-2 rounded-md ring-1 ring-gray-300"
-            />
+            <div className="relative">
+              <Clerk.Input
+                type={showPassword ? "text" : "password"}
+                required
+                className="p-2 rounded-md ring-1 ring-gray-300 w-full"
+                id="password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             <Clerk.FieldError className="text-xs text-red-400" />
           </Clerk.Field>
           <SignIn.Action
