@@ -537,6 +537,26 @@ export const updateFees = async (data: FeesFormSchema) => {
   }
 };
 
+export const payFees = async (data: FormData) => {
+  const id = data.get("id") as string;
+  try {
+    await prisma.fees.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        paid: true,
+      },
+    });
+
+    // revalidatePath("/list/fees");
+    return { success: true, error: false };
+  } catch (err) {
+    console.log("Error paying fees:", err);
+    return { success: false, error: true };
+  }
+}
+
 export const getStudents = async () => {
   try {
     const students = await prisma.student.findMany({

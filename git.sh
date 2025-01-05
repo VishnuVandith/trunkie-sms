@@ -1,3 +1,3 @@
 git add .
-git commit -m "Added fee page"
+git commit -m "Fees payment rendered"
 git push

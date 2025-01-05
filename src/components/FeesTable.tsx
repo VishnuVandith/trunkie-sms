@@ -1,6 +1,7 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import TableSearch from './TableSearch';
+import PaymentModal from './PaymentModal';
 
 interface FeesTableProps {
     feesData: any[];
@@ -8,6 +9,17 @@ interface FeesTableProps {
 }
 
 const FeesTable: React.FC<FeesTableProps> = ({ feesData, role }) => {
+    const [selectedFeeId, setSelectedFeeId] = useState<number | null>(null);
+    const [fees, setFees] = useState(feesData);
+
+    const handlePayment = (feeId: number) => {
+        setSelectedFeeId(feeId);
+    };
+
+    const handlePaymentSuccess = () => {
+        setFees(fees.map(fee => fee.id === selectedFeeId ? { ...fee, paid: true } : fee));
+    };
+
     return (
         <div className="overflow-x-auto mt-4">
             <table className="w-full border-collapse">
@@ -21,7 +33,7 @@ const FeesTable: React.FC<FeesTableProps> = ({ feesData, role }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {feesData.map((fee, index) => (
+                    {fees.map((fee, index) => (
                         <tr key={fee.id} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} text-sm hover:bg-lamaPurpleLight`}>
                             <td className="px-4 py-2">{fee.amount}</td>
                             <td className="px-4 py-2">{new Date(fee.dueDate).toLocaleDateString()}</td>
@@ -33,7 +45,7 @@ const FeesTable: React.FC<FeesTableProps> = ({ feesData, role }) => {
                                         {fee.paid ? "Paid" : "Pending"}
                                     </div>
                                 ) : (
-                                    <button className="border-2 border-black rounded-md w-36" disabled={fee.paid}>
+                                    <button className="border-2 border-black rounded-md w-36" disabled={fee.paid} onClick={() => handlePayment(fee.id)}>
                                         {fee.paid ? "Paid" : "Pay"}
                                     </button>
                                 )}
@@ -42,6 +54,13 @@ const FeesTable: React.FC<FeesTableProps> = ({ feesData, role }) => {
                     ))}
                 </tbody>
             </table>
+            {selectedFeeId !== null && (
+                <PaymentModal
+                    feeId={selectedFeeId}
+                    onClose={() => setSelectedFeeId(null)}
+                    onPaymentSuccess={handlePaymentSuccess}
+                />
+            )}
         </div>
     );
 };
