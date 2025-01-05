@@ -29,7 +29,7 @@ const ResultListPage = async ({
 }) => {
 
 const { userId, sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
+const role = sessionClaims?.role;
 const currentUserId = userId;
 
 

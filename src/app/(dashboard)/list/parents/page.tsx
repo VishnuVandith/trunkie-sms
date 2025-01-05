@@ -18,7 +18,8 @@ const ParentListPage = async ({
 }) => {
 
 const { sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
+const role = sessionClaims?.role;
+console.log(role);
 
 
 const columns = [

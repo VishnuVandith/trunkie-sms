@@ -156,9 +156,9 @@ const StudentListPage = async ({
             </button>
             {role === "admin" && (
               <>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+                {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
                   <Plus size={14} />
-                </button>
+                </button> */}
                 <FormContainer table="student" type="create" />
               </>
             )}

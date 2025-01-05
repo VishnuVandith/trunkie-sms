@@ -7,6 +7,8 @@ import { auth } from "@clerk/nextjs/server";
 
 const StudentPage = async () => {
   const { userId } = auth();
+  console.log(userId);
+  
 
   const classItem = await prisma.class.findMany({
     where: {

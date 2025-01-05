@@ -17,7 +17,9 @@ const TeacherListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const { sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const role = sessionClaims?.role;
+  console.log(role);
+  
   const columns = [
     {
       header: "Info",

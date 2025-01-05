@@ -1,17 +1,38 @@
 import { Day, PrismaClient, UserSex } from "@prisma/client";
+import { clerkClient } from "@clerk/nextjs/server";
+import { role } from "@/lib/data";
 const prisma = new PrismaClient();
 
 async function main() {
   // ADMIN
+  const client = clerkClient();
+  console.log("Moddaaa");
+
+  const user1 = await client.users.createUser({
+    emailAddress: ['admin1@gmail.com'],
+    password: 'trunki@123',
+    username: 'admin1',
+    publicMetadata: {
+      role: "admin"
+    },
+  });
+  const user2 = await client.users.createUser({
+    emailAddress: ['admin2@gmail.com'],
+    password: 'trunki@123',
+    username: 'admin2',
+    publicMetadata: {
+      role: "admin"
+    },
+  });
   await prisma.admin.create({
     data: {
-      id: "admin1",
+      id: user1.id,
       username: "admin1",
     },
   });
   await prisma.admin.create({
     data: {
-      id: "admin2",
+      id: user2.id,
       username: "admin2",
     },
   });
@@ -55,14 +76,24 @@ async function main() {
   }
 
   // TEACHER
+  let teacherId = [];
   for (let i = 1; i <= 15; i++) {
+    const client = clerkClient();
+    const user = await client.users.createUser({
+      emailAddress: [`teacher${i}@gmail.com`],
+      password: 'trunki@123',
+      username: `teacher${i}`,
+      publicMetadata: {
+        role: "teacher"
+      },
+    });
     await prisma.teacher.create({
       data: {
-        id: `teacher${i}`, // Unique ID for the teacher
+        id: user.id, // Unique ID for the teacher
         username: `teacher${i}`,
         name: `TName${i}`,
         surname: `TSurname${i}`,
-        email: `teacher${i}@example.com`,
+        email: `teacher${i}@gmail.com`,
         phone: `123-456-789${i}`,
         address: `Address${i}`,
         bloodType: "A+",
@@ -72,6 +103,7 @@ async function main() {
         birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 30)),
       },
     });
+    teacherId.push(user.id);
   }
 
   // LESSON
@@ -88,45 +120,67 @@ async function main() {
         endTime: new Date(new Date().setHours(new Date().getHours() + 3)), 
         subjectId: (i % 10) + 1, 
         classId: (i % 6) + 1, 
-        teacherId: `teacher${(i % 15) + 1}`, 
+        teacherId: teacherId[(i % 14) + 1], 
       },
     });
   }
 
   // PARENT
+  let parentId = [];
   for (let i = 1; i <= 25; i++) {
+    const client = clerkClient();
+    const user = await client.users.createUser({
+      emailAddress: [`parent${i}@gmail.com`],
+      password: "trunki@123",
+      username: `parentId${i}`,
+      publicMetadata: {
+        role: "parent"
+      },
+    });
     await prisma.parent.create({
       data: {
-        id: `parentId${i}`,
+        id: user.id,
         username: `parentId${i}`,
         name: `PName ${i}`,
         surname: `PSurname ${i}`,
-        email: `parent${i}@example.com`,
+        email: `parent${i}@gmail.com`,
         phone: `123-456-789${i}`,
         address: `Address${i}`,
       },
     });
+    parentId.push(user.id);
   }
 
   // STUDENT
+  let studentId = [];
   for (let i = 1; i <= 50; i++) {
+    const client = clerkClient();
+    const user = await client.users.createUser({
+      emailAddress: [`student${i}@gmail.com`],
+      password:"trunki@123",
+      username: `student${i}`,
+      publicMetadata: {
+        role: "student"
+      },
+    });
     await prisma.student.create({
       data: {
-        id: `student${i}`, 
+        id: user.id, 
         username: `student${i}`, 
         name: `SName${i}`,
         surname: `SSurname ${i}`,
-        email: `student${i}@example.com`,
+        email: `student${i}@gmail.com`,
         phone: `987-654-321${i}`,
         address: `Address${i}`,
         bloodType: "O-",
         sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        parentId: `parentId${Math.ceil(i / 2) % 25 || 25}`, 
+        parentId: parentId[(i % 24) + 1], 
         gradeId: (i % 6) + 1, 
         classId: (i % 6) + 1, 
         birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 10)),
       },
     });
+    studentId.push(user.id);
   }
 
   // EXAM
@@ -158,7 +212,7 @@ async function main() {
     await prisma.result.create({
       data: {
         score: 90, 
-        studentId: `student${i}`, 
+        studentId: studentId[i],
         ...(i <= 5 ? { examId: i } : { assignmentId: i - 5 }), 
       },
     });
@@ -170,7 +224,7 @@ async function main() {
       data: {
         date: new Date(), 
         present: true, 
-        studentId: `student${i}`, 
+        studentId: studentId[i],
         lessonId: (i % 30) + 1, 
       },
     });

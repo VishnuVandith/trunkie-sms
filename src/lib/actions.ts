@@ -143,6 +143,7 @@ export const createTeacher = async (
 ) => {
   try {
     const user = await clerkClient.users.createUser({
+      emailAddress: data.email ? [data.email] : [],
       username: data.username,
       password: data.password,
       firstName: data.name,
@@ -261,8 +262,10 @@ export const createStudent = async (
     if (classItem && classItem.capacity === classItem._count.students) {
       return { success: false, error: true };
     }
+    console.log(data.email);
 
     const user = await clerkClient.users.createUser({
+      emailAddress: data.email ? [data.email] : [],
       username: data.username,
       password: data.password,
       firstName: data.name,

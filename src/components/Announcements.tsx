@@ -3,8 +3,12 @@ import { auth } from "@clerk/nextjs/server";
 
 const Announcements = async () => {
   const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const role = sessionClaims?.role;
 
+  console.log(role);
+  console.log(userId);
+  
+  
   const roleConditions = {
     teacher: { lessons: { some: { teacherId: userId! } } },
     student: { students: { some: { id: userId! } } },
@@ -28,7 +32,6 @@ const Announcements = async () => {
     <div className="bg-white p-4 rounded-md">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Announcements</h1>
-        <span className="text-xs text-gray-400">View All</span>
       </div>
       <div className="flex flex-col gap-4 mt-4">
         {data[0] && (
