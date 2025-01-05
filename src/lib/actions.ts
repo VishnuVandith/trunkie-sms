@@ -7,6 +7,7 @@ import {
   StudentSchema,
   SubjectSchema,
   TeacherSchema,
+  FeesFormSchema
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -80,6 +81,25 @@ export const deleteSubject = async (
   }
 };
 
+export const deleteFees = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    await prisma.fees.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    // revalidatePath("/list/fees");
+    return { success: true, error: false };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true };
+  }
+}
 export const createClass = async (
   currentState: CurrentState,
   data: ClassSchema
@@ -467,5 +487,68 @@ export const deleteExam = async (
   } catch (err) {
     console.log(err);
     return { success: false, error: true };
+  }
+};
+
+export const createFees = async (data: FeesFormSchema) => {
+  try {
+    console.log("Creating fees with data:", data);
+    await prisma.fees.create({
+      data: {
+        amount: data.amount,
+        dueDate: new Date(data.dueDate),
+        studentId: data.studentId,
+        parentId: data.parentId,
+        paid: false,
+      },
+    });
+    console.log("Fees created successfully");
+
+    // revalidatePath("/list/fees");
+    return { success: true, error: false };
+  } catch (err) {
+    console.log("Error creating fees:", err);
+    return { success: false, error: true };
+  }
+};
+
+export const updateFees = async (data: FeesFormSchema) => {
+  try {
+    console.log("Updating fees with data:", data);
+    await prisma.fees.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        amount: data.amount,
+        dueDate: new Date(data.dueDate),
+        studentId: data.studentId,
+        parentId: data.parentId,
+        paid: data.paid,
+      },
+    });
+    console.log("Fees updated successfully");
+
+    // revalidatePath("/list/fees");
+    return { success: true, error: false };
+  } catch (err) {
+    console.log("Error updating fees:", err);
+    return { success: false, error: true };
+  }
+};
+
+export const getStudents = async () => {
+  try {
+    const students = await prisma.student.findMany({
+      select: {
+        id: true,
+        name: true,
+        parentId: true,
+      },
+    });
+    return students;
+  } catch (err) {
+    console.log(err);
+    return [];
   }
 };

@@ -1,3 +1,3 @@
 git add .
-git commit -m "Made all the ui changes automated the clerk user creation and base setup for the fee page"
+git commit -m "Added fee page"
 git push

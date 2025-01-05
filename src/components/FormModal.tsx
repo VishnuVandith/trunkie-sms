@@ -6,6 +6,7 @@ import {
   deleteStudent,
   deleteSubject,
   deleteTeacher,
+  deleteFees,
 } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -29,6 +30,7 @@ const deleteActionMap = {
   attendance: deleteSubject,
   event: deleteSubject,
   announcement: deleteSubject,
+  fees: deleteFees,
 };
 
 // USE LAZY LOADING
@@ -49,6 +51,9 @@ const ClassForm = dynamic(() => import("./forms/ClassForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const FeesForm = dynamic(() => import("./forms/FeesForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 // TODO: OTHER FORMS
@@ -100,8 +105,15 @@ const forms: {
       setOpen={setOpen}
       relatedData={relatedData}
     />
-    // TODO OTHER LIST ITEMS
   ),
+  fees: (setOpen, type, data, relatedData) => (
+    <FeesForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+    />
+  ),
+  // TODO OTHER LIST ITEMS
 };
 
 const FormModal = ({
@@ -169,11 +181,10 @@ const FormModal = ({
             <div
               className="absolute top-4 right-4 cursor-pointer"
               onClick={() => setOpen(false)}
-            >
+            ></div>
               <Image src="/close.png" alt="" width={14} height={14} />
             </div>
           </div>
-        </div>
       )}
     </>
   );

@@ -87,3 +87,15 @@ export const examSchema = z.object({
 });
 
 export type ExamSchema = z.infer<typeof examSchema>;
+
+
+export const feesFormSchema = z.object({
+  id: z.coerce.number().optional(),
+  amount: z.coerce.number().min(0, { message: "Amount must be a positive number!" }),
+  dueDate: z.coerce.date({ message: "Due date is required!" }),
+  paid: z.boolean({ message: "Paid status is required!" }),
+  studentId: z.string().min(1, { message: "Student ID is required!" }),
+  parentId: z.string().min(1, { message: "Parent ID is required!" }),
+});
+
+export type FeesFormSchema = z.infer<typeof feesFormSchema>;

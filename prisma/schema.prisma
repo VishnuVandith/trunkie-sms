@@ -33,6 +33,7 @@ model Student {
   attendances Attendance[]
   results     Result[]
   birthday    DateTime
+  fees        Fees[]
 }
 
 model Teacher {
@@ -63,6 +64,7 @@ model Parent {
   address   String
   createdAt DateTime  @default(now())
   students  Student[]
+  fees      Fees[]
 }
 
 model Grade {
@@ -179,16 +181,16 @@ model Announcement {
   class   Class? @relation(fields: [classId], references: [id])
 }
 
-// model Fees {
-//   id        Int      @id @default(autoincrement())
-//   amount    Float
-//   dueDate   DateTime
-//   paid      Boolean
-//   studentId String
-//   parentId String
-//   parent    Parent @relation(fields: [parentId], references: [id])
-//   student   Student @relation(fields: [studentId], references: [id])
-// }
+model Fees {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  dueDate   DateTime
+  paid      Boolean
+  studentId String
+  parentId String
+  parent    Parent @relation(fields: [parentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
+}
 
 enum UserSex {
   MALE
