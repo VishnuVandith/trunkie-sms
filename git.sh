@@ -1,3 +1,3 @@
 git add .
-git commit -m "Fees payment rendered"
+git commit -m "Supabase integration completed"
 git push
